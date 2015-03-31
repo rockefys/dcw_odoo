@@ -296,7 +296,7 @@
                         <page name='internal_notes' string="Internal Notes">
                             <field name="comment" placeholder="Put an internal note..."/>
                         </page>
-                        <page name='sales_purchases' string="Sales &amp; Purchases">
+                        <page name='sales_purchases' string="Sales &amp; Purchases" invisible="1">
                             <group>
                                 <group>
                                     <field name="user_id" 
