@@ -6,7 +6,7 @@
             <field name="inherit_id" ref="stock.view_stock_return_picking_form"/>
             <field name="arch" type="xml">
                 <field name="product_return_moves" position="after">
-                    <field name="invoice_state"/>
+                    <field name="invoice_state" invisible="1"/>
                 </field>
             </field>
         </record>

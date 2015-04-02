@@ -344,7 +344,7 @@
             <t t-esc='widget.vote_nb' />
             <i class="fa fa-thumbs-o-up"></i>
         </span>
-        <a href='#' class="oe_msg_vote">
+        <a href='#' class="oe_msg_vote" invisible="1">
             <t t-if="!widget.has_voted">like</t>
             <t t-if="widget.has_voted">unlike</t>
         </a>

@@ -1195,7 +1195,7 @@
         </t>
         <t t-if="!widget.get('effective_readonly')">
             <a t-if="! widget.options.no_open" href="#" tabindex="-1"
-                class="oe_m2o_cm_button oe_e" draggable="false">/</a>
+                class="" draggable="false" invisible="1"></a>
             <div>
                 <input type="text"
                     t-att-id="widget.id_for_label"
@@ -1204,7 +1204,7 @@
                     t-att-placeholder="widget.node.attrs.placeholder"
                 />
                 <span class="oe_m2o_drop_down_button">
-                    <img t-att-src='_s + "/web/static/src/img/down-arrow.png"' draggable="false"/>
+                    <img t-att-src='_s + "/web/static/src/img/down-arrow.png"' draggable="false" invisible="1"/>
                 </span>
             </div>
         </t>
