@@ -2,17 +2,15 @@
 <openerp>
     <data>
         <template id="report_picking">
+           <t t-name="stock.report_picking">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
                     <t t-call="report.external_layout">
                         <div class="page">
-                            <div class="row"><div class="col-xs-4 pull-right">
-                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 100)" style="width:300px;height:50px;"/>
-                            </div></div>
                             <div class="row">
                                 <div class="col-xs-6">
                                     <div t-if="o.picking_type_id.code=='incoming' and o.partner_id">
-                                        <span><strong>Supplier Address:</strong></span>
+                                        <span><strong>供应商:</strong></span>
                                     </div>
                                     <div t-if="o.picking_type_id.code=='internal' and o.partner_id">
                                         <span><strong>Warehouse Address:</strong></span>
@@ -21,35 +19,46 @@
                                         <span><strong>Customer Address:</strong></span>
                                     </div>
                                     <div t-if="o.partner_id" name="partner_header">
-                                        <div t-field="o.partner_id"
-                                           t-field-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": true}'/>
+                                        <div t-field="o.partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;name&quot;], &quot;no_marker&quot;: true}"/>
                                         <p t-if="o.partner_id.vat">VAT: <span t-field="o.partner_id.vat"/></p>
                                     </div>
                                 </div>
                                 <div class="col-xs-5 col-xs-offset-1">
-                                    <div t-if="o.move_lines and o.move_lines[0].partner_id and o.move_lines[0].partner_id.id != o.partner_id.id">
-                                        <span><strong>Delivery Address:</strong></span>
-                                        <div t-field="o.move_lines[0].partner_id"
-                                            t-field-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": true}'/>
-                                    </div>
-                                    <div t-if="o.picking_type_id.code != 'internal' and (not o.move_lines or not o.move_lines[0].partner_id) and o.picking_type_id.warehouse_id.partner_id">
-                                        <span><strong>Warehouse Address:</strong></span>
-                                        <div t-field="o.picking_type_id.warehouse_id.partner_id"
-                                            t-field-options='{"widget": "contact", "fields": ["address", "name", "phone", "fax"], "no_marker": true}'/>
-                                    </div>
+                                    <t t-if="o.picking_type_id.code=='incoming'">
+                                        <li>车牌号:</li>
+                                        <li>物流单号:</li>
+                                    </t>
+                                    <t t-if="o.picking_type_id.code!='incoming'">
+                                        <div t-if="o.move_lines and o.move_lines[0].partner_id and o.move_lines[0].partner_id.id != o.partner_id.id">
+                                            <span><strong>Delivery Address:</strong></span>
+                                            <div t-field="o.move_lines[0].partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;, &quot;fax&quot;], &quot;no_marker&quot;: true}"/>
+                                        </div>
+                                        <div t-if="o.picking_type_id.code != 'internal' and (not o.move_lines or not o.move_lines[0].partner_id) and o.picking_type_id.warehouse_id.partner_id">
+                                            <span><strong>Warehouse Address:</strong></span>
+                                            <div t-field="o.picking_type_id.warehouse_id.partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;, &quot;fax&quot;], &quot;no_marker&quot;: true}"/>
+                                        </div>
+                                    </t>
+
+                                    
                                 </div>
                             </div>
                             <h2>
                             <span t-field="o.picking_type_id"/>:
                             <span t-field="o.name"/>
                             </h2>
-                            <table class="table table-condensed">
+                            <table name="general" class="table table-condensed">
                             <thead>
                                 <tr>
                                     <th><strong>Order (Origin)</strong></th>
                                     <th><strong>State</strong></th>
-                                    <th><strong>Commitment Date</strong></th>
-                                    <th name="td_sched_date_h"><strong>Scheduled Date</strong></th>
+                                    <th><strong>确认日期</strong></th>
+                                    <t t-if="o.picking_type_id.code == 'incoming'">
+                                        <th><strong>实际收货时间</strong></th>
+                                    </t>
+                                    
+                                    <t t-if="o.picking_type_id.code == 'outgoing'">
+                                        <th><strong>实际出货时间</strong></th>
+                                    </t>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,81 +73,151 @@
                                         <span t-field="o.date"/>
                                     </td>
                                     <td name="td_sched_date">
-                                        <span t-field="o.min_date"/>
+                                        <span/>
                                     </td>
                                 </tr>
                             </tbody>
                             </table>
                             <br/>
                             <br/>
-                            <table class="table table-condensed" t-if="not o.pack_operation_ids">
+                            <table name="no_pack_operation" class="table table-condensed" t-if="not o.pack_operation_ids">
                               <thead>
                                 <tr>
                                     <th><strong>Product</strong></th>
-                                    <th class="text-right"><strong>Quantity</strong></th>
-                                    <t t-if="o.picking_type_id.code != 'incoming'"><th><strong>Source</strong></th></t>
-                                    <th><strong>Barcode</strong></th>
-                                    <t t-if="o.picking_type_id.code != 'outgoing'"><th><strong>Destination</strong></th></t>
+                                    <t t-if="o.picking_type_id.code=='incoming'">
+                                        <th><strong>入库库位</strong></th>
+                                        <th class="text-right"><strong>订货<br/>数量</strong></th>
+                                        <th class="text-right"><strong>发货<br/>数量</strong></th>
+                                        <th class="text-center"><strong>重量</strong></th>
+                                        <th class="text-center"><strong>体积</strong></th>
+                                        <th class="text-center"><strong>备注</strong></th>
+
+                                    </t>
+
+                                    <t t-if="o.picking_type_id.code!='incoming'">
+                                        <th class="text-right"><strong>Quantity</strong></th>
+                                        <t t-if="o.picking_type_id.code != 'incoming'"><th><strong>Source</strong></th></t>
+                                        <t t-if="o.picking_type_id.code != 'outgoing'"><th><strong>Destination</strong></th></t>
+                                    </t>
+
+                                    
                                 </tr>
                               </thead>
                               <tbody>
                                 <tr t-foreach="o.move_lines" t-as="move">
                                     <td><span t-field="move.product_id"/></td>
-                                    <td class="text-right"><span t-field="move.product_uom_qty"/> <span t-field="move.product_uom" groups="product.group_uom"/></td>
-                                    <t t-if="o.picking_type_id.code != 'incoming'"><td><span t-field="move.location_id"/></td></t>
-                                    <td>
-                                        <span t-if="move.product_id and move.product_id.ean13">
-                                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('EAN13', move.product_id.ean13, 600, 100)" style="width:300px;height:50px"/>
-                                        </span>
-                                    </td>
-                                    <t t-if="o.picking_type_id.code != 'outgoing'"><td><span t-field="move.location_dest_id"/></td></t>
+                                    <t t-if="o.picking_type_id.code=='incoming'">
+                                        <td><span t-field="move.location_dest_id"/></td> 
+                                        <td class="text-right"><span t-field="move.product_uom_qty"/> <span t-field="move.product_uom" groups="product.group_uom"/></td>
+                                        <td><span>　　　　　　</span></td>
+                                        <td><span>　　　　　　</span></td>
+                                        <td><span>　　　　　　</span></td>
+                                        <td><span>　　　　　　</span></td>
+                                        
+                                    </t>
+                                    <t t-if="o.picking_type_id.code!='incoming'">
+                                        <td class="text-right"><span t-field="move.product_uom_qty"/> <span t-field="move.product_uom" groups="product.group_uom"/></td>
+                                        <t t-if="o.picking_type_id.code != 'incoming'"><td><span t-field="move.location_id"/></td></t>
+                                        <td>
+                                            <span t-if="move.product_id and move.product_id.ean13">
+                                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('EAN13', move.product_id.ean13, 600, 100)" style="width:300px;height:50px"/>
+                                            </span>
+                                        </td>
+                                        <t t-if="o.picking_type_id.code != 'outgoing'"><td><span t-field="move.location_dest_id"/></td></t>
+                                    </t>
+                                    
                                 </tr>
                               </tbody>
                             </table>
-                            <table class="table table-condensed" t-if="o.pack_operation_ids">
-                              <thead>
+                            <table name="pack_operation_list" class="table table-condensed" t-if="o.pack_operation_ids">
+                              
                                 <tr>
                                     <th><strong>Product</strong></th>
-                                    <th class="text-right"><strong>Quantity</strong></th>
-                                    <t t-if="o.picking_type_id.code != 'incoming'"><th><strong>Source</strong></th></t>
-                                    <th><strong>Barcode</strong></th>
-                                    <t t-if="o.picking_type_id.code != 'outgoing'"><th><strong>Destination</strong></th></t>
+                                    <t t-if="o.picking_type_id.code=='incoming'">
+                                        <th><strong>入库库位</strong></th>
+                                        <th class="text-right"><strong>订货<br/>数量</strong></th>
+                                        <th class="text-right"><strong>接收<br/>数量</strong></th>
+                                        <th class="text-center"><strong>生产日期</strong></th>
+                                        <th class="text-center"><strong>外观<br/>(是否合格)</strong></th>
+                                        <th class="text-center"><strong>是否接收</strong></th>
+                                        <th class="text-center"><strong>情况说明</strong></th>
+
+                                    </t>
+                                    <t t-if="o.picking_type_id.code!='incoming'">
+                                        <th class="text-right"><strong>Quantity</strong></th>
+                                        <t t-if="o.picking_type_id.code != 'incoming'"><th><strong>源库位</strong></th></t>
+                                        <t t-if="o.picking_type_id.code != 'outgoing'"><th><strong>目标库位</strong></th></t>
+                                    </t>
                                 </tr>
-                              </thead>
+                             
                               <tbody>
                                 <tr t-foreach="o.pack_operation_ids" t-as="pack_operation">
-                                    <td><span t-field="pack_operation.product_id"/>
-                                        <t t-if="not pack_operation.product_id and pack_operation.package_id"><span  t-field="pack_operation.package_id"/></t></td>
-                                    <td class="text-right"><span t-field="pack_operation.product_qty"/> <span t-field="pack_operation.product_uom_id" groups="product.group_uom"/></td>
-                                    <t t-if="o.picking_type_id.code != 'incoming'"><td><span t-field="pack_operation.location_id"/>
-                                        <span t-if="pack_operation.package_id">:</span>
-                                        <span t-field="pack_operation.package_id"/>
-                                        <span t-if="pack_operation.lot_id">:</span>
-                                        <span t-field="pack_operation.lot_id"/>
-                                        </td>
+                                    <td class="col-xs-2"><span t-field="pack_operation.product_id"/>
+                                        <t t-if="not pack_operation.product_id and pack_operation.package_id"><span t-field="pack_operation.package_id"/></t></td>
+                                    <t t-if="o.picking_type_id.code=='incoming'">
+                                        <td></td> 
+                                        <td class="text-right"><span t-field="pack_operation.product_qty"/> <span t-field="pack_operation.product_uom_id" groups="product.group_uom"/></td>
+                                        <td><span>　　　　　　</span></td>
+                                        <td><span>　　　　　　</span></td>
+                                        <td><span>　　　　　　</span></td>
+                                        <td><span>　　　　　　</span></td>
+                                        <td><span>　　　　　　</span></td>
                                     </t>
-                                    <td>
-                                        <span t-if="pack_operation.lot_id">
-                                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', pack_operation.lot_id.name, 600, 100)" style="width:300px;height:50px"/>
-                                        </span>
-                                        <span t-if="pack_operation.product_id and not pack_operation.lot_id and pack_operation.product_id.ean13">
-                                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('EAN13', pack_operation.product_id.ean13, 600, 100)" style="width:300px;height:50px"/>
-                                        </span>
-                                        <span t-if="pack_operation.package_id and not pack_operation.product_id">
-                                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', pack_operation.package_id.name, 600, 100)" style="width:300px;height:50px"/>
-                                        </span>
-                                    </td>
-                                    <t t-if="o.picking_type_id.code != 'outgoing'"><td><span t-field="pack_operation.location_dest_id"/>
-                                        <span t-if="pack_operation.result_package_id">:</span>
-                                        <span t-field="pack_operation.result_package_id"/>
-                                    </td></t>
+                                    <t t-if="o.picking_type_id.code!='incoming'">
+                                        <td class="text-right"><span t-field="pack_operation.product_qty"/> <span t-field="pack_operation.product_uom_id" groups="product.group_uom"/></td>
+                                        <t t-if="o.picking_type_id.code != 'incoming'"><td><span t-field="pack_operation.location_id"/>
+                                            <span t-if="pack_operation.package_id">:</span>
+                                            <span t-field="pack_operation.package_id"/>
+                                            <span t-if="pack_operation.lot_id">:</span>
+                                            <span t-field="pack_operation.lot_id"/>
+                                            </td>
+                                        </t>
+                                        <td t-if="pack_operation.lot_id">
+                                            <span t-if="pack_operation.lot_id">
+                                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', pack_operation.lot_id.name, 600, 100)" style="width:300px;height:50px"/>
+                                            </span>
+                                            <span t-if="pack_operation.product_id and not pack_operation.lot_id and pack_operation.product_id.ean13">
+                                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('EAN13', pack_operation.product_id.ean13, 600, 100)" style="width:300px;height:50px"/>
+                                            </span>
+                                            <span t-if="pack_operation.package_id and not pack_operation.product_id">
+                                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', pack_operation.package_id.name, 600, 100)" style="width:300px;height:50px"/>
+                                            </span>
+                                        </td>
+                                        <t t-if="o.picking_type_id.code != 'outgoing'"><td><span t-field="pack_operation.location_dest_id"/>
+                                            <span t-if="pack_operation.result_package_id">:</span>
+                                            <span t-field="pack_operation.result_package_id"/>
+                                        </td></t>
+                                    </t>
+                                    
                                 </tr>
                               </tbody>
                             </table>
+                            <table class="table table-bordered" t-if="o.picking_type_id.code =='incoming' ">
+                                <tr><td colspan='2'><span>备注：</span>
+                                        <br></br>
+                                        <br></br>
+                                        <br></br>
+                                    </td>
+                                </tr>
+                                <tr><td><span>（1）品控签字：</span></td> <td rowspan='4' align='right'><span>(收讫章)</span></td></tr>
+                                <tr><td><span>（2）库管签字：</span></td></tr>
+                                <tr><td><span>（3）送货签字：</span></td> </tr>
+                                <tr><td><span>信息员：    </span><input type="checkbox"> 已入账 </input> <input type="checkbox"> 已录入</input><span>　打印时间：</span><span t-esc="(datetime.datetime.now() + datetime.timedelta(hours=8)).strftime('%Y-%m-%d %H:%M:%S')"/><span>　录入时间:</span></td>
+                                </tr>
+                            </table>
+                            <div class="footer">
+                                <table class="table table-bordered" t-if="o.picking_type_id.code =='incoming' ">
+                                    
+                                    <tr><td><span> 1.财务（白联）　　2.品购（粉联）　　3.仓库（绿联）　　4.司机（蓝联）</span></td></tr>
+
+                                </table>
+                            </div>
                         </div>
+
                     </t>
                  </t>
              </t>
+        </t>
         </template>
     </data>
 </openerp>

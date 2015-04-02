@@ -4592,6 +4592,7 @@ instance.web.form.One2ManyGroups = instance.web.ListView.Groups.extend({
     }
 });
 instance.web.form.One2ManyList = instance.web.form.AddAnItemList.extend({
+    //$(".oe_form_field_one2many_list_row_add").click(function(){alert('haha');});
     _add_row_class: 'oe_form_field_one2many_list_row_add',
     is_readonly: function () {
         return this.view.o2m.get('effective_readonly');
