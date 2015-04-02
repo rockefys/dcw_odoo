@@ -72,12 +72,12 @@
                             <page string="Information">
                                 <group colspan="4">
                                     <group>
-                                        <field name="type"/>
+                                        <field name="type" invisible="1"/>
                                         <field name="uom_id" on_change="onchange_uom(uom_id,uom_po_id)" groups="product.group_uom"/>
-                                        <field name="list_price"/>
+                                        <field name="list_price" invisible="1"/>
                                     </group>
                                     <group>
-                                        <field name="active"/>
+                                        <field name="active" invisible="1"/>
                                     </group>
                                 </group>
                                 <group colspan="4">

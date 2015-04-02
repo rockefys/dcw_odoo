@@ -2744,7 +2744,8 @@ class stock_inventory(osv.osv):
                         tot_qty += quant.qty
                     inventory_line_obj.write(cr, uid, [line.id], {'theoretical_qty': tot_qty}, context=context)
 
-        return self.write(cr, uid, ids, {'state': 'confirm', 'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)})
+        self.write(cr, uid, ids, {'state': 'confirm', 'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)})
+        return self.reset_real_qty(cr,uid,ids,context)
 
     def _get_inventory_lines(self, cr, uid, inventory, context=None):
         location_obj = self.pool.get('stock.location')

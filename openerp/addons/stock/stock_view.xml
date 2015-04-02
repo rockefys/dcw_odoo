@@ -115,7 +115,7 @@
                     </group>
                     <notebook attrs="{'invisible':[('state','=','draft')]}">
                         <page string="Inventory Details" >
-                            <button name="reset_real_qty" states="confirm" string="⇒ Set quantities to 0" type="object" class="oe_link oe_right" groups="stock.group_stock_user"/>
+                            <button name="reset_real_qty" states="confirm" string="⇒ Set quantities to 0" type="object" class="oe_link oe_right" groups="stock.group_stock_user" invisible="1"/>
                             <field name="line_ids" string="Inventory Details" context="{'default_location_id': location_id,  'default_product_id': product_id, 'default_prod_lot_id': lot_id, 'default_package_id': package_id, 'default_partner_id': partner_id}">
                                 <tree string="Inventory Details" editable="bottom" colors="blue: product_qty != theoretical_qty; red: theoretical_qty &lt; 0">
                                     <field context="{'location':location_id, 'uom':product_uom_id, 'to_date':parent.date}" name="product_id" on_change="on_change_product_id(product_id,product_uom_id,theoretical_qty,context)" domain="[('type','=','product')]"/>
@@ -124,7 +124,7 @@
                                     <field name="prod_lot_id" on_change="restrict_change(theoretical_qty)" domain="[('product_id', '=', product_id)]" context="{'default_product_id': product_id}"  groups="stock.group_production_lot"/>
                                     <field name="package_id" on_change="restrict_change(theoretical_qty)" groups="stock.group_tracking_lot"/>
                                     <field name="partner_id" on_change="restrict_change(theoretical_qty)" groups="stock.group_tracking_owner"/>
-                                    <field name="theoretical_qty" readonly="1"/>
+                                    <field name="theoretical_qty" readonly="1" invisible="True"/>
                                     <field name="product_qty" string="Real Quantity"/>
                                     <field name="state" invisible="True"/>
                                 </tree>
@@ -669,10 +669,11 @@
                         <group>
                             <field name="partner_id"/>                            
                             <field name="backorder_id" readonly="1" attrs="{'invisible': [('backorder_id','=',False)]}"/>
+                            
                         </group>
                         <group>
                             <field name="date"/>
-                            <field name="min_date"/>
+                            <field name="min_date" invisible="1"/>
                             <field name="origin" placeholder="e.g. PO0032" class="oe_inline"/>
                             <label for="owner_id" groups="stock.group_tracking_owner"/>
                             <div groups="stock.group_tracking_owner">
@@ -711,7 +712,7 @@
                         <page string="Additional Info">
                             <group string="General Informations">
                                 <group>
-                                    <field name="move_type"/>
+                                    <field name="move_type" invisible="1"/>
                                     <field name="picking_type_id"/>
                                     <field name="picking_type_code" invisible="1"/>
                                     <field name="quant_reserved_exist" invisible="1"/>                                    
@@ -719,10 +720,10 @@
                                     <field name="location_dest_id" invisible="1"/>
                                 </group>
                                 <group>
-                                    <field name="company_id" groups="base.group_multi_company" widget="selection"/>
-                                    <field name="date_done" groups="base.group_no_one"/>
-                                    <field name="group_id"/>
-                                    <field name="priority"/>
+                                    <field name="company_id" groups="base.group_multi_company" widget="selection" invisible="1"/>
+                                    <field name="date_done" groups="base.group_no_one" invisible="1"/>
+                                    <field name="group_id" invisible="1"/>
+                                    <field name="priority" invisible="1"/>
                                 </group>
                             </group>
                         </page>
@@ -1013,9 +1014,9 @@
                                     <button name="%(stock.move_scrap)d"
                                             string="Scrap" type="action"
                                             icon="terp-gtk-jump-to-ltr" context="{'scrap': True}"
-                                            states="draft,waiting,confirmed,assigned" colspan="1"/>
+                                            states="draft,waiting,confirmed,assigned" colspan="1" invisible="1"/>
                                 </div>
-                                <field name="name"/>
+                                <field name="name" invisible="1"/>
                                 <label for="product_uos_qty" groups="product.group_uos"/>
                                 <div groups="product.group_uos">
                                     <field name="product_uos_qty"
@@ -1028,7 +1029,7 @@
                                 <field name="picking_type_id"/>
                                 <field name="priority"/>
                                 <field name="company_id" groups="base.group_multi_company" widget="selection"/>
-                                <field name="date_expected" on_change="onchange_date(date,date_expected)" attrs="{'invisible': [('state', '=', 'done')]}"/>
+                                <field name="date_expected" on_change="onchange_date(date,date_expected)" attrs="{'invisible': [('state', '=', 'done')]}" invisible="1"/>
                                 <field name="date" attrs="{'invisible': [('state', '!=', 'done')]}"/>
                             </group>
                         </group>
@@ -1078,14 +1079,14 @@
                                 string="Scrap" type="action"
                                 icon="terp-gtk-jump-to-ltr" context="{'scrap': True}"
                                 states="draft,waiting,confirmed,assigned"
-                                groups="base.group_user"/>
+                                groups="base.group_user" invisible="1"/>
                         </div>
                         <label for="product_uos_qty" groups="product.group_uos"/>
                         <div groups="product.group_uos">
                             <field name="product_uos_qty" on_change="onchange_uos_quantity(product_id, product_uos_qty, product_uos, product_uom)" class="oe_inline"/>
                             <field name="product_uos" on_change="onchange_quantity(product_id, product_uom_qty, product_uom, product_uos)" class="oe_inline"/>
                         </div>
-                        <field name="name"/>
+                        <field name="name" invisible="1"/>
                         <field name="product_tmpl_id" invisible="1"/>
                         <field name="product_packaging" groups="product.group_stock_packaging" domain="[('product_tmpl_id','=',product_tmpl_id)]"/>
                     </group>
@@ -1492,7 +1493,7 @@
                 <form string="Reordering Rules">
                     <sheet>
                         <div class="oe_right oe_button_box">
-                            <button name="action_view_proc_to_process" type="object" string="Procurement Orders to Process"/>                            
+                            <button name="action_view_proc_to_process" type="object" string="Procurement Orders to Process" invisible="1"/>                            
                         </div>
                         <group>
                             <group>
@@ -1500,10 +1501,12 @@
                                 <field name="product_id" on_change="onchange_product_id(product_id)"/>
                             </group>
                             <group>
+
                                 <field name="warehouse_id" on_change="onchange_warehouse_id(warehouse_id)" widget="selection" groups="stock.group_locations"/>
-                                <field name="product_uom" groups="product.group_uom"/>
+                                <field name="product_uom" groups="product.group_uom" invisible="1"/>
+
                                 <field name="location_id" groups="stock.group_locations"/>
-                                <field name="group_id" groups="stock.group_adv_location"/>
+                                <field name="group_id" groups="stock.group_adv_location" invisible="1"/>
                                 <field name="company_id" groups="base.group_multi_company" widget="selection"/>
                             </group>
                         </group>
@@ -1511,7 +1514,7 @@
                             <group string="Rules">
                                 <field name="product_min_qty" />
                                 <field name="product_max_qty" />
-                                <field name="qty_multiple" string="Quantity Multiple"/>
+                                <field name="qty_multiple" string="Quantity Multiple" invisible="1"/>
                             </group>
                             <group string="Misc">
                                 <field name="active" />
