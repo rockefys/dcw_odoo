@@ -32,7 +32,7 @@
             <field name="inherit_id" ref="stock.vpicktree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='backorder_id']" position="after">
-                    <field name="invoice_state" groups="account.group_account_invoice"/>
+                    <field name="invoice_state" groups="account.group_account_invoice" invisible="1"/>
                 </xpath>
             </field>
         </record>
