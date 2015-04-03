@@ -16,6 +16,7 @@
     'data': [
         "base_view.xml",
         "mail_data.xml",
+        "web_layout.xml",
     ],
     'demo_xml': [],
     'test': [

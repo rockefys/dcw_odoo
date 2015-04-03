@@ -595,10 +595,10 @@
         </button>
         -->
         <li>
-            <a class="oe_i" type="button" data-pager-action="previous">(</a>
+            <a class="oe_i" type="button" data-pager-action="previous">上一页</a>
         </li>
         <li>
-            <a class="oe_i" type="button" data-pager-action="next">)</a>
+            <a class="oe_i" type="button" data-pager-action="next">下一页</a>
         </li>
         <!--
         <button class="oe_button oe_button_pager" type="button" data-pager-action="last">
