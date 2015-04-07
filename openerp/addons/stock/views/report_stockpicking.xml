@@ -108,7 +108,7 @@
                                 <tr t-foreach="o.move_lines" t-as="move">
                                     <td class="col-xs-2"><span t-field="move.product_id"/></td>
                                     <t t-if="o.picking_type_id.code=='incoming'">
-                                        <td><span t-field="move.location_dest_id"/></td> 
+                                        <td></td> 
                                         <td class="text-right"><span t-field="move.product_uom_qty"/> <span t-field="move.product_uom" groups="product.group_uom"/></td>
                                         <td><span>　　　　　　</span></td>
                                         <td><span>　　　　　　</span></td>
