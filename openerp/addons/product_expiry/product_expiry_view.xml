@@ -10,6 +10,7 @@
                 <group string="Dates">
                     <group>
                         <field name="use_date" />
+                        <field name="production_date" />
                         <field name="removal_date" />
                     </group>
                     <group>
