@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    <!--定义表单视图-->
+        <record model="ir.ui.view" id="wms_help_form_view">
+            <field name="name">wms.help.form</field>
+            <field name="type">form</field>
+            <field name="model">wms.help</field>
+            <field name="arch" type="xml">
+                <form string="wms.help.form" version="7.0">
+                  <group>
+                    <field name="title"/>
+                    <field name="date_upd"/>
+                    <field name="content"/>
+		    <field name="author"/>
+		    <field name="type"/>
+                 </group>
+                </form>
+            </field>
+        </record>
+        <!--定义列表视图-->
+        <record model="ir.ui.view" id="wms_help_tree_view">
+            <field name="name">wms.help.tree</field>
+            <field name="type">tree</field>
+            <field name="model">wms.help</field>
+            <field name="arch" type="xml">
+                <tree string="wms.help.tree" version="7.0">
+                    <field name="title"/>
+                    <field name="date_upd"/>
+		    <field name="author"/>
+                </tree>
+            </field>
+        </record>
+<!--
+    <record model="ir.actions.act_window"  id="action_wms_help">
+        <field name="name">wms.help</field>
+        <field name="res_model">wms.help</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form,tree</field>
+        <field name="view_id" ref="wms_help_tree_view"/>
+    </record>
+-->
+    <record id="action_help_show_purchase" model="ir.actions.act_window">
+	<field name="name">wms.help.purchase.act</field>
+	<field name="type">ir.actions.act_window</field>
+	<field name="res_model">wms.help</field>
+	<field name="context">{}</field>
+	<field name="domain">[('type','=','purchase')]</field>
+	<field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_help_show_input" model="ir.actions.act_window">
+        <field name="name">wms.help.stockpicking.in</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">wms.help</field>
+        <field name="context">{}</field>
+        <field name="domain">[('type','=','input')]</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_help_show_output" model="ir.actions.act_window">
+        <field name="name">wms.help.stockpicking.out</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">wms.help</field>
+        <field name="context">{}</field>
+        <field name="domain">[('type','=','output')]</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+<!--定义菜单-->
+    <menuitem id="wms_help_menu" name="HELP"/>
+    <menuitem id="wms_help_document_menu" name="Category" parent="wms_help_menu"/>
+    <menuitem id="wms_help_document_purchase_menu" name="Purchase" parent="wms_help_document_menu" action="action_help_show_purchase"/>
+    <menuitem id="wms_help_document_input_menu" name="Stock Picking In" parent="wms_help_document_menu" action="action_help_show_input"/>
+    <menuitem id="wms_help_document_output_menu" name="Stock Picking Out" parent="wms_help_document_menu" action="action_help_show_output"/>
+</data>
+</openerp>
+
