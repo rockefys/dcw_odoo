@@ -45,7 +45,6 @@ class stock_production_lot(osv.osv):
         return calc_date
 
     _columns = {
-        'production_date':fields.date('Production Date'),
         'life_date': fields.datetime('End of Life Date',
             help='This is the date on which the goods with this Serial Number may become dangerous and must not be consumed.'),
         'use_date': fields.datetime('Best before Date',
