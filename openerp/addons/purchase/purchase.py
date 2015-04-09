@@ -545,16 +545,6 @@ class purchase_order(osv.osv):
             self.write(cr, uid, [id], {'state' : 'confirmed', 'validator' : uid})
         return True
 
-    def wkf_invoiced_order(self, cr, uid, ids, context=None):
-        for id in ids:
-            self.write(cr, uid, [id], {'state' : 'invoiced', 'validator' : uid})
-        return True
-        
-    def wkf_pickinged_order(self, cr, uid, ids, context=None):
-        for id in ids:
-            self.write(cr, uid, [id], {'state' : 'pickinged', 'validator' : uid})
-        return True
-
     def _choose_account_from_po_line(self, cr, uid, po_line, context=None):
         fiscal_obj = self.pool.get('account.fiscal.position')
         property_obj = self.pool.get('ir.property')
