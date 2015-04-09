@@ -661,7 +661,7 @@ class stock_picking(osv.osv):
     _name = "stock.picking"
     _inherit = ['mail.thread']
     _description = "Picking List"
-    _order = "id desc, date asc, priority desc"
+    _order = "priority desc, date asc, id desc"
 
     def _set_min_date(self, cr, uid, id, field, value, arg, context=None):
         move_obj = self.pool.get("stock.move")
@@ -900,6 +900,7 @@ class stock_picking(osv.osv):
         """ Changes state of picking to available if moves are confirmed or waiting.
         @return: True
         """
+        self.action_confirm(cr, uid, ids, context)
         for pick in self.browse(cr, uid, ids, context=context):
             move_ids = [x.id for x in pick.move_lines if x.state in ['confirmed', 'waiting']]
             self.pool.get('stock.move').force_assign(cr, uid, move_ids, context=context)
@@ -1398,6 +1399,7 @@ class stock_picking(osv.osv):
             context = {}
         stock_move_obj = self.pool.get('stock.move')
         for picking in self.browse(cr, uid, picking_ids, context=context):
+
             if not picking.pack_operation_ids:
                 self.action_done(cr, uid, [picking.id], context=context)
                 continue

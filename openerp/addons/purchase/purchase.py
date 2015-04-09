@@ -188,7 +188,9 @@ class purchase_order(osv.osv):
         ('sent', 'RFQ'),
         ('bid', 'Bid Received'),
         ('confirmed', 'Waiting Approval'),
+        ('invoiced', 'Waiting Invoice'),
         ('approved', 'Purchase Confirmed'),
+        ('pickinged', 'Waiting Invoice'),
         ('except_picking', 'Shipping Exception'),
         ('except_invoice', 'Invoice Exception'),
         ('done', 'Done'),
@@ -541,6 +543,16 @@ class purchase_order(osv.osv):
         self.pool.get('purchase.order.line').action_confirm(cr, uid, todo, context)
         for id in ids:
             self.write(cr, uid, [id], {'state' : 'confirmed', 'validator' : uid})
+        return True
+
+    def wkf_invoiced_order(self, cr, uid, ids, context=None):
+        for id in ids:
+            self.write(cr, uid, [id], {'state' : 'invoiced', 'validator' : uid})
+        return True
+        
+    def wkf_pickinged_order(self, cr, uid, ids, context=None):
+        for id in ids:
+            self.write(cr, uid, [id], {'state' : 'pickinged', 'validator' : uid})
         return True
 
     def _choose_account_from_po_line(self, cr, uid, po_line, context=None):
