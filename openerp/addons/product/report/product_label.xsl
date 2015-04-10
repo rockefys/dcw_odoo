@@ -22,7 +22,7 @@
 				</pageTemplate>
 			</template>
 			<stylesheet>
-				<paraStyle name="nospace" fontName="Courier" fontSize="10" spaceBefore="0" spaceAfter="0"/>
+				<paraStyle name="nospace" fontName="DejaVuSansYuanTi-Regular" fontSize="10" spaceBefore="0" spaceAfter="0"/>
 				<blockTableStyle id="mytable">
 					<blockBackground colorName="lightred" start="0,0" stop="0,0"/>
 					<blockBackground colorName="lightgrey" start="1,0" stop="-1,0"/>
