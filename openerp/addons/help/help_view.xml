@@ -40,13 +40,21 @@
         <field name="view_id" ref="wms_help_tree_view"/>
     </record>
 -->
+    <record id="action_help_show_summary" model="ir.actions.act_window">
+       <field name="name">wms.help.summary.act</field>
+       <field name="type">ir.actions.act_window</field>
+       <field name="res_model">wms.help</field>
+       <field name="context">{}</field>
+       <field name="domain">[('type','=','summary')]</field>
+       <field name="view_mode">tree,form</field>
+    </record>
     <record id="action_help_show_purchase" model="ir.actions.act_window">
-	<field name="name">wms.help.purchase.act</field>
-	<field name="type">ir.actions.act_window</field>
-	<field name="res_model">wms.help</field>
-	<field name="context">{}</field>
-	<field name="domain">[('type','=','purchase')]</field>
-	<field name="view_mode">tree,form</field>
+	   <field name="name">wms.help.purchase.act</field>
+	   <field name="type">ir.actions.act_window</field>
+	   <field name="res_model">wms.help</field>
+	   <field name="context">{}</field>
+	   <field name="domain">[('type','=','purchase')]</field>
+	   <field name="view_mode">tree,form</field>
     </record>
     <record id="action_help_show_input" model="ir.actions.act_window">
         <field name="name">wms.help.stockpicking.in</field>
@@ -64,12 +72,49 @@
         <field name="domain">[('type','=','output')]</field>
         <field name="view_mode">tree,form</field>
     </record>
+    <record id="action_help_show_return" model="ir.actions.act_window">
+        <field name="name">wms.help.stockpicking.return</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">wms.help</field>
+        <field name="context">{}</field>
+        <field name="domain">[('type','=','return')]</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_help_show_finance" model="ir.actions.act_window">
+        <field name="name">wms.help.finance.act</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">wms.help</field>
+        <field name="context">{}</field>
+        <field name="domain">[('type','=','finance')]</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_help_show_check" model="ir.actions.act_window">
+        <field name="name">wms.help.check.act</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">wms.help</field>
+        <field name="context">{}</field>
+        <field name="domain">[('type','=','check')]</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="action_help_show_other" model="ir.actions.act_window">
+        <field name="name">wms.help.other.act</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">wms.help</field>
+        <field name="context">{}</field>
+        <field name="domain">[('type','=','other')]</field>
+        <field name="view_mode">tree,form</field>
+    </record>
 <!--定义菜单-->
     <menuitem id="wms_help_menu" name="HELP"/>
     <menuitem id="wms_help_document_menu" name="Category" parent="wms_help_menu"/>
+    <menuitem id="wms_help_document_summary_menu" name="Summary" parent="wms_help_document_menu" action="action_help_show_summary"/>
     <menuitem id="wms_help_document_purchase_menu" name="Purchase" parent="wms_help_document_menu" action="action_help_show_purchase"/>
     <menuitem id="wms_help_document_input_menu" name="Stock Picking In" parent="wms_help_document_menu" action="action_help_show_input"/>
     <menuitem id="wms_help_document_output_menu" name="Stock Picking Out" parent="wms_help_document_menu" action="action_help_show_output"/>
+    <menuitem id="wms_help_document_return_menu" name="Stock Picking Return" parent="wms_help_document_menu" action="action_help_show_return"/>
+    <menuitem id="wms_help_document_finance_menu" name="Finance" parent="wms_help_document_menu" action="action_help_show_finance"/>
+    <menuitem id="wms_help_document_check_menu" name="Check" parent="wms_help_document_menu" action="action_help_show_check"/>
+    <menuitem id="wms_help_document_other_menu" name="Other" parent="wms_help_document_menu" action="action_help_show_other"/>
 </data>
 </openerp>
 
