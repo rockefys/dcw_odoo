@@ -755,7 +755,9 @@
 <t t-name="ListView.pager">
     <div class="oe_list_pager" t-att-colspan="widget.columns_count">
         <t t-if="!widget.no_leaf and widget.options.pager !== false" t-call="ViewPager">
-            <span class="oe_list_pager_state">
+<span class="oe_list_pager_state"></span>
+            <span class="select_oe">
+<!--<select><option value="80">80</option><option value="200">200</option><option value="500">500</option><option value="2000">2000</option><option value="NaN">不限</option></select>-->
             </span>
         </t>
     </div>
