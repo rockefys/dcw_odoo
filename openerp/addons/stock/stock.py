@@ -907,6 +907,18 @@ class stock_picking(osv.osv):
         self.write(cr, uid, ids, {'recompute_pack_op': True}, context=context)
         return True
 
+    def force_assign_direct(self, cr, uid, ids, context=None):
+        """ Changes state of picking to available if moves are confirmed or waiting.
+        @return: True
+        """
+        self.action_confirm(cr, uid, ids, context)
+        for pick in self.browse(cr, uid, ids, context=context):
+            move_ids = [x.id for x in pick.move_lines if x.state in ['confirmed', 'waiting']]
+            self.pool.get('stock.move').force_assign(cr, uid, move_ids, context=context)
+        #pack_operation might have changed and need to be recomputed
+        self.write(cr, uid, ids, {'recompute_pack_op': True}, context=context)
+        return True
+
     def action_cancel(self, cr, uid, ids, context=None):
         for pick in self.browse(cr, uid, ids, context=context):
             ids2 = [move.id for move in pick.move_lines]
@@ -1398,6 +1410,7 @@ class stock_picking(osv.osv):
             context = {}
         stock_move_obj = self.pool.get('stock.move')
         for picking in self.browse(cr, uid, picking_ids, context=context):
+
             if not picking.pack_operation_ids:
                 self.action_done(cr, uid, [picking.id], context=context)
                 continue
