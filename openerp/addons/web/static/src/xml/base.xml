@@ -510,7 +510,7 @@
                           </li>
                         </t>
                     </ul>
-                    <div class="oe_view_manager_pager oe_right" style="width:400px;"/>
+                    <div class="oe_view_manager_pager oe_right" style="width:800px;"/>
                 </td>
             </tr>
         </table>
@@ -585,9 +585,6 @@
     </div>
 </t>
 <t t-name="ViewPager">
-    <div class="oe_pager_value">
-        <t t-raw="0"/>
-    </div>
     <ul class="oe_pager_group">
         <!--
         <button class="oe_button oe_button_pager" type="button" data-pager-action="first">
@@ -595,10 +592,10 @@
         </button>
         -->
         <li>
-            <a type="button" data-pager-action="previous">上一页</a>
+            <a class="oe_i" type="button" data-pager-action="previous">上一页</a>
         </li>
         <li>
-            <a type="button" data-pager-action="next">下一页</a>
+            <a class="oe_i" type="button" data-pager-action="next">下一页</a>
         </li>
         <!--
         <button class="oe_button oe_button_pager" type="button" data-pager-action="last">
@@ -606,6 +603,9 @@
         </button>
         -->
     </ul>
+    <div class="oe_pager_value">
+        <t t-raw="0"/>
+    </div>
 </t>
 
 <t t-name="Sidebar">

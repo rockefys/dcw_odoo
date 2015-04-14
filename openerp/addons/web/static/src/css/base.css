@@ -1214,7 +1214,7 @@
   line-height: 26px;
 }
 .openerp .oe_pager_value {
-  float: left;
+  float:  right;
   margin-right: 8px;
 }
 .openerp ul.oe_pager_group {
@@ -1222,7 +1222,7 @@
   margin: 0;
 }
 .openerp .oe_pager_group {
-  float: left;
+  float: right;
   height: 24px;
   line-height: 24px;
   display: inline-block;
