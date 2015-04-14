@@ -1215,8 +1215,7 @@
 }
 .openerp .oe_pager_value {
   float: left;
-  margin-right: 1px;
-
+  margin-right: 8px;
 }
 .openerp ul.oe_pager_group {
   padding: 0;
