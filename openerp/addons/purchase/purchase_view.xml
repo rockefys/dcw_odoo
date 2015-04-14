@@ -246,8 +246,8 @@
                             <field name="order_line">
                                 <tree string="Purchase Order Lines" editable="bottom">
                                     <field name="product_id" on_change="onchange_product_id(parent.pricelist_id,product_id,0,False,parent.partner_id, parent.date_order,parent.fiscal_position,date_planned,False,False,parent.state,context)"/>
-                                    <field name="name"/>
-                                    <field name="date_planned"/>
+                                    <field name="name" invisible="1"/>
+                                    <field name="date_planned" invisible="1"/>
                                     <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                                     <field name="account_analytic_id" groups="purchase.group_analytic_accounting" domain="[('type','not in',('view','template'))]"/>
                                     <field name="product_qty" on_change="onchange_product_id(parent.pricelist_id,product_id,product_qty,product_uom,parent.partner_id,parent.date_order,parent.fiscal_position,date_planned,name,False,parent.state,context)"/>
@@ -281,7 +281,7 @@
                         <page string="Deliveries &amp; Invoices">
                             <group>
                                 <group>
-                                    <field name="minimum_planned_date" />
+                                    <field name="minimum_planned_date" invisible="1"/>
                                     <field name="location_id" groups="stock.group_locations"/>
                                     <field name="shipped" groups="base.group_no_one" invisible="1"/>
                                 </group>
@@ -364,8 +364,8 @@
                     <field name="date_order" />
                     <field name="partner_id"/>
                     <field name="company_id" groups="base.group_multi_company" widget="selection"/>
-                    <field name="minimum_planned_date" invisible="context.get('quotation_only', False)"/>
-                    <field name="origin"/>
+                    <!--<field name="minimum_planned_date" invisible="context.get('quotation_only', False)"/>-->
+                    <field name="origin" invisible="1"/>
                     <field name="amount_untaxed" sum="Total Untaxed amount" string="Untaxed"/>
                     <field name="amount_total" sum="Total amount"/>
                     <field name="state"/>
