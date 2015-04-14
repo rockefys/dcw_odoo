@@ -317,29 +317,38 @@ instance.web.ListView = instance.web.View.extend( /** @lends instance.web.ListVi
                         self.page = 0;
                     }
                     self.reload_content();
-                }).find('.oe_list_pager_state')
-                    .click(function (e) {
-                        e.stopPropagation();
-                        var $this = $(this);
+                }).find('select')
+                    // .click(function (e) {
+                        // var $this = $(this);
+                        // console.log('44')
 
-                        var $select = $('<select>')
-                            .appendTo($this.empty())
-                            .click(function (e) {e.stopPropagation();})
-                            .append('<option value="80">80</option>' +
-                                    '<option value="200">200</option>' +
-                                    '<option value="500">500</option>' +
-                                    '<option value="2000">2000</option>' +
-                                    '<option value="NaN">' + _t("Unlimited") + '</option>')
-                            .change(function () {
-                                var val = parseInt($select.val(), 10);
+                        // var $select = $('<select>')
+                        //     .appendTo($this.empty())
+                        //     .click(function (e) {e.stopPropagation();})
+                        //     .append('<option value="80">80</option>' +
+                        //             '<option value="200">200</option>' +
+                        //             '<option value="500">500</option>' +
+                        //             '<option value="2000">2000</option>' +
+                        //             '<option value="NaN">' + _t("Unlimited") + '</option>')
+                        //     .change(function () {
+                        //         var val = parseInt($select.val(), 10);
+                        //         self._limit = (isNaN(val) ? null : val);
+                        //         self.page = 0;
+                        //         self.reload_content();
+                        //     }).blur(function() {
+                        //         $(this).trigger('change');
+                        //     })
+                        //     .val(self._limit || 'NaN');
+                            .change(function (e) {
+                        var _this = $(this);
+                        e.stopPropagation();
+                        //alert(1)
+                                var val = parseInt(_this.val(), 10);
                                 self._limit = (isNaN(val) ? null : val);
                                 self.page = 0;
                                 self.reload_content();
-                            }).blur(function() {
-                                $(this).trigger('change');
                             })
-                            .val(self._limit || 'NaN');
-                    });
+                    // });
         }
 
         // Sidebar
@@ -419,7 +428,7 @@ instance.web.ListView = instance.web.View.extend( /** @lends instance.web.ListVi
             if (range_stop > total) {
                 range_stop = total;
             }
-            spager = _.str.sprintf(_t("%d-%d of %d"), range_start, range_stop, total);
+            spager = _.str.sprintf(_t("第%d-%d条,共%d条"), range_start, range_stop, total);
         }
 
         this.$pager.find('.oe_list_pager_state').text(spager);
