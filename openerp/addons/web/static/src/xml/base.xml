@@ -510,7 +510,7 @@
                           </li>
                         </t>
                     </ul>
-                    <div class="oe_view_manager_pager oe_right"/>
+                    <div class="oe_view_manager_pager oe_right" style="width:400px;"/>
                 </td>
             </tr>
         </table>
