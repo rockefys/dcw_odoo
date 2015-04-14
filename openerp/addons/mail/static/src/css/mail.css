@@ -152,6 +152,11 @@
         -ms-user-select: none;
             user-select: none;
 }
+
+.openerp .oe_mail .oe_msg.oe_msg_composer_compact,.oe_followers,.oe_msg_vote,.openerp .oe_mail .oe_msg .oe_msg_icons{
+    display: none!important;
+}
+
 .openerp .oe_mail .oe_msg .oe_msg_icons span{
     float:right;
     width:24px;
