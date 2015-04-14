@@ -38,7 +38,7 @@
                                             <div t-field="o.picking_type_id.warehouse_id.partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;, &quot;fax&quot;], &quot;no_marker&quot;: true}"/>
                                         </div>
                                     </t>
-
+                                    路线:<div t-field="o.note"></div>
                                     
                                 </div>
                             </div>
