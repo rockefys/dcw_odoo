@@ -324,33 +324,33 @@
 }
 .openerp button.oe_highlight {
   background-color: green;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#1fb822), to(#1fb822));
-  background-image: -webkit-linear-gradient(top, #1fb822, #1fb822);
-  background-image: -moz-linear-gradient(top, #1fb822, #1fb822);
-  background-image: -ms-linear-gradient(top, #1fb822, #1fb822);
-  background-image: -o-linear-gradient(top, #1fb822, #1fb822);
-  background-image: linear-gradient(to bottom, #1fb822, #1fb822);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(green), to(green));
+  background-image: -webkit-linear-gradient(top, green, green);
+  background-image: -moz-linear-gradient(top, green, green);
+  background-image: -ms-linear-gradient(top, green, green);
+  background-image: -o-linear-gradient(top, green, green);
+  background-image: linear-gradient(to bottom, green, green);
   -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(155, 155, 155, 0.4) inset;
   -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(155, 155, 155, 0.4) inset;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(155, 155, 155, 0.4) inset;
 }
 .openerp button.oe_highlight:hover {
   background-color: #c63939;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#1fb822), to(#1fb822));
-  background-image: -webkit-linear-gradient(top, #1fb822, #1fb822);
-  background-image: -moz-linear-gradient(top, #1fb822, #1fb822);
-  background-image: -ms-linear-gradient(top, #1fb822, #1fb822);
-  background-image: -o-linear-gradient(top, #1fb822, #1fb822);
-  background-image: linear-gradient(to bottom, #1fb822, #1fb822);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(green), to(green));
+  background-image: -webkit-linear-gradient(top, green, green);
+  background-image: -moz-linear-gradient(top, green, green);
+  background-image: -ms-linear-gradient(top, green, green);
+  background-image: -o-linear-gradient(top, green, green);
+  background-image: linear-gradient(to bottom, green, green);
 }
 .openerp button.oe_highlight:active {
   background-color: #cb2121;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#1fb822), to(#1fb822));
-  background-image: -webkit-linear-gradient(top, #1fb822, #1fb822);
-  background-image: -moz-linear-gradient(top, #1fb822, #1fb822);
-  background-image: -ms-linear-gradient(top, #1fb822, #1fb822);
-  background-image: -o-linear-gradient(top, #1fb822, #1fb822);
-  background-image: linear-gradient(to bottom, #1fb822,#1fb822);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(green), to(green));
+  background-image: -webkit-linear-gradient(top, green, green);
+  background-image: -moz-linear-gradient(top, green, green);
+  background-image: -ms-linear-gradient(top, green, green);
+  background-image: -o-linear-gradient(top, green, green);
+  background-image: linear-gradient(to bottom, green,green);
 }
 .openerp .oe_background_grey {
   background: #eee !important;

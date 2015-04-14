@@ -1344,12 +1344,12 @@
             <field name="arch" type="xml">
                 <kanban class="oe_background_grey" create="0">
                     <field name="complete_name"/>
-                    <field name="color"/>
-                    <field name="count_picking_ready"/>
-                    <field name="count_picking_draft"/>
-                    <field name="count_picking_waiting"/>
-                    <field name="count_picking_late"/>
-                    <field name="count_picking_backorders"/>
+                    <field name="color" invisible="1"/>
+                    <field name="count_picking_ready" invisible="1"/>
+                    <field name="count_picking_draft" invisible="1"/>
+                    <field name="count_picking_waiting" invisible="1"/>
+                    <field name="count_picking_late" invisible="1"/>
+                    <field name="count_picking_backorders" invisible="1"/>
                     <templates>
                         <t t-name="kanban-box">
                             <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_stock_picking_type">
@@ -1374,7 +1374,7 @@
                                                 <field name="count_picking_ready"/> Ready
                                             </a>
                                             <a name="161" type="action" class="oe_sparkline_bar_link">
-                                                <field name="last_done_picking" widget="sparkline_bar" options="{'type': 'tristate', 'colorMap': {'0': 'orange', '-1': 'red', '1': 'green'}}">Last 10 Done Operations</field>
+                                                <field invisible="1" name="last_done_picking" widget="sparkline_bar" options="{'type': 'tristate', 'colorMap': {'0': 'orange', '-1': 'red', '1': 'green'}}">Last 10 Done Operations</field>
                                             </a>
                                         </div>
                                         <div t-if="record.count_picking_waiting.raw_value &gt; 0">
