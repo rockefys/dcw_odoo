@@ -2566,6 +2566,7 @@ class stock_move(osv.osv):
 class stock_inventory(osv.osv):
     _name = "stock.inventory"
     _description = "Inventory"
+    _order = 'date desc'
 
     def _get_move_ids_exist(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
