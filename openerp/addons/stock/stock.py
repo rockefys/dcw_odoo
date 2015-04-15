@@ -2566,6 +2566,7 @@ class stock_move(osv.osv):
 class stock_inventory(osv.osv):
     _name = "stock.inventory"
     _description = "Inventory"
+    _order = 'date desc'
 
     def _get_move_ids_exist(self, cr, uid, ids, field_name, arg, context=None):
         res = {}
@@ -2583,7 +2584,7 @@ class stock_inventory(osv.osv):
            :rtype: list of tuple
         """
         #default available choices
-        res_filter = [('none', _('All products')), ('product', _('One product only'))]
+        res_filter = [('none', _('All products')), ('partial', _('Manual Selection of Products'))]
         settings_obj = self.pool.get('stock.config.settings')
         config_ids = settings_obj.search(cr, uid, [], limit=1, order='id DESC', context=context)
         #If we don't have updated config until now, all fields are by default false and so should be not dipslayed
@@ -2626,7 +2627,7 @@ class stock_inventory(osv.osv):
         'partner_id': fields.many2one('res.partner', 'Inventoried Owner', readonly=True, states={'draft': [('readonly', False)]}, help="Specify Owner to focus your inventory on a particular Owner."),
         'lot_id': fields.many2one('stock.production.lot', 'Inventoried Lot/Serial Number', readonly=True, states={'draft': [('readonly', False)]}, help="Specify Lot/Serial Number to focus your inventory on a particular Lot/Serial Number.", copy=False),
         'move_ids_exist': fields.function(_get_move_ids_exist, type='boolean', string=' Stock Move Exists?', help='technical field for attrs in view'),
-        'filter': fields.selection(_get_available_filters, 'Selection Filter', required=True),
+        'filter': fields.selection(_get_available_filters, 'Inventory of', required=True,),
         'total_qty': fields.function(_get_total_qty, type="float"),
     }
 
@@ -2719,13 +2720,15 @@ class stock_inventory(osv.osv):
             stock_move_obj.unlink(cr, uid, move_ids, context=context)
             for line in inventory.line_ids:
                 #compare the checked quantities on inventory lines to the theorical one
-                inventory_line_obj._resolve_inventory_line(cr, uid, line, context=context)
+                #inventory_line_obj._resolve_inventory_line(cr, uid, line, context=context)
+                stock_move = inventory_line_obj._resolve_inventory_line(cr, uid, line, context=context)
 
     def action_cancel_draft(self, cr, uid, ids, context=None):
         """ Cancels the stock move and change inventory state to draft.
         @return: True
         """
         for inv in self.browse(cr, uid, ids, context=context):
+            self.write(cr, uid, [inv.id], {'line_ids': [(5,)]}, context=context)
             self.pool.get('stock.move').action_cancel(cr, uid, [x.id for x in inv.move_ids], context=context)
             self.write(cr, uid, [inv.id], {'state': 'draft'}, context=context)
         return True
@@ -2738,11 +2741,13 @@ class stock_inventory(osv.osv):
         for inventory in self.browse(cr, uid, ids, context=context):
             # If there are inventory lines already (e.g. from import), respect those and set their theoretical qty
             line_ids = [line.id for line in inventory.line_ids]
-            if not line_ids:
+            #if not line_ids:
+            if not line_ids and inventory.filter != 'partial':
                 #compute the inventory lines and create them
                 vals = self._get_inventory_lines(cr, uid, inventory, context=context)
                 for product_line in vals:
                     inventory_line_obj.create(cr, uid, product_line, context=context)
+            '''
             else:
                 # On import calculate theoretical quantity
                 quant_obj = self.pool.get("stock.quant")
@@ -2756,6 +2761,7 @@ class stock_inventory(osv.osv):
                     for quant in quant_obj.browse(cr, uid, quants, context=context):
                         tot_qty += quant.qty
                     inventory_line_obj.write(cr, uid, [line.id], {'theoretical_qty': tot_qty}, context=context)
+                    '''
 
         self.write(cr, uid, ids, {'state': 'confirm', 'date': time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)})
         return self.reset_real_qty(cr,uid,ids,context)
@@ -2813,6 +2819,19 @@ class stock_inventory_line(osv.osv):
     def _get_prodlot_change(self, cr, uid, ids, context=None):
         return self.pool.get('stock.inventory.line').search(cr, uid, [('prod_lot_id', 'in', ids)], context=context)
 
+    def _get_theoretical_qty(self, cr, uid, ids, name, args, context=None):
+        res = {}
+        quant_obj = self.pool["stock.quant"]
+        uom_obj = self.pool["product.uom"]
+        for line in self.browse(cr, uid, ids, context=context):
+            quant_ids = self._get_quants(cr, uid, line, context=context)
+            quants = quant_obj.browse(cr, uid, quant_ids, context=context)
+            tot_qty = sum([x.qty for x in quants])
+            if line.product_uom_id and line.product_id.uom_id.id != line.product_uom_id.id:
+                tot_qty = uom_obj._compute_qty_obj(cr, uid, line.product_id.uom_id, tot_qty, line.product_uom_id, context=context)
+            res[line.id] = tot_qty
+        return res
+
     _columns = {
         'inventory_id': fields.many2one('stock.inventory', 'Inventory', ondelete='cascade', select=True),
         'location_id': fields.many2one('stock.location', 'Location', required=True, select=True),
@@ -2823,7 +2842,10 @@ class stock_inventory_line(osv.osv):
         'company_id': fields.related('inventory_id', 'company_id', type='many2one', relation='res.company', string='Company', store=True, select=True, readonly=True),
         'prod_lot_id': fields.many2one('stock.production.lot', 'Serial Number', domain="[('product_id','=',product_id)]"),
         'state': fields.related('inventory_id', 'state', type='char', string='Status', readonly=True),
-        'theoretical_qty': fields.float('Theoretical Quantity', digits_compute=dp.get_precision('Product Unit of Measure'), readonly=True),
+        #'theoretical_qty': fields.float('Theoretical Quantity', digits_compute=dp.get_precision('Product Unit of Measure'), readonly=True),
+        'theoretical_qty': fields.function(_get_theoretical_qty, type='float', digits_compute=dp.get_precision('Product Unit of Measure'),
+            store={'stock.inventory.line': (lambda self, cr, uid, ids, c={}: ids, ['location_id', 'product_id', 'package_id', 'product_uom_id', 'company_id', 'prod_lot_id', 'partner_id'], 20),},
+            readonly=True, string="Theoretical Quantity"),
         'partner_id': fields.many2one('res.partner', 'Owner'),
         'product_name': fields.related('product_id', 'name', type='char', string='Product Name', store={
                                                                                             'product.product': (_get_product_name_change, ['name', 'default_code'], 20),
@@ -2840,11 +2862,43 @@ class stock_inventory_line(osv.osv):
     }
 
     _defaults = {
-        'product_qty': 1,
+        'product_qty': 0,
     }
 
+    def _get_quants(self, cr, uid, line, context=None):
+        quant_obj = self.pool["stock.quant"]
+        dom = [('company_id', '=', line.company_id.id), ('location_id', '=', line.location_id.id), ('lot_id', '=', line.prod_lot_id.id),
+                        ('product_id','=', line.product_id.id), ('owner_id', '=', line.partner_id.id), ('package_id', '=', line.package_id.id)]
+        quants = quant_obj.search(cr, uid, dom, context=context)
+        return quants
+
+    def onchange_createline(self, cr, uid, ids, location_id=False, product_id=False, uom_id=False, package_id=False, prod_lot_id=False, partner_id=False, company_id=False, context=None):
+        quant_obj = self.pool["stock.quant"]
+        uom_obj = self.pool["product.uom"]
+        res = {'value': {}}
+        # If no UoM already put the default UoM of the product
+        if product_id and not uom_id:
+            product = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
+            res['value']['product_uom_id'] = product.uom_id.id
+            res['domain'] = {'product_uom_id': [('category_id','=',product.uom_id.category_id.id)]}
+            uom_id = product.uom_id.id
+        # Calculate theoretical quantity by searching the quants as in quants_get
+        if product_id and location_id:
+            product = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
+            if not company_id:
+                company_id = self.pool.get('res.users').browse(cr, uid, uid, context=context).company_id.id
+            dom = [('company_id', '=', company_id), ('location_id', '=', location_id), ('lot_id', '=', prod_lot_id),
+                        ('product_id','=', product_id), ('owner_id', '=', partner_id), ('package_id', '=', package_id)]
+            quants = quant_obj.search(cr, uid, dom, context=context)
+            th_qty = sum([x.qty for x in quant_obj.browse(cr, uid, quants, context=context)])
+            if product_id and uom_id and product.uom_id.id != uom_id:
+                th_qty = uom_obj._compute_qty(cr, uid, product.uom_id.id, th_qty, uom_id)
+            res['value']['theoretical_qty'] = th_qty
+        return res
+    '''
     def _resolve_inventory_line(self, cr, uid, inventory_line, context=None):
         stock_move_obj = self.pool.get('stock.move')
+        quant_obj = self.pool.get('stock.quant')
         diff = inventory_line.theoretical_qty - inventory_line.product_qty
         if not diff:
             return
@@ -2872,8 +2926,57 @@ class stock_inventory_line(osv.osv):
             vals['location_dest_id'] = inventory_location_id
             vals['product_uom_qty'] = diff
         return stock_move_obj.create(cr, uid, vals, context=context)
+    '''
+    def _resolve_inventory_line(self, cr, uid, inventory_line, context=None):
+        stock_move_obj = self.pool.get('stock.move')
+        quant_obj = self.pool.get('stock.quant')
+        diff = inventory_line.theoretical_qty - inventory_line.product_qty
+        if not diff:
+            return
+        #each theorical_lines where difference between theoretical and checked quantities is not 0 is a line for which we need to create a stock move
+        vals = {
+            'name': _('INV:') + (inventory_line.inventory_id.name or ''),
+            'product_id': inventory_line.product_id.id,
+            'product_uom': inventory_line.product_uom_id.id,
+            'date': inventory_line.inventory_id.date,
+            'company_id': inventory_line.inventory_id.company_id.id,
+            'inventory_id': inventory_line.inventory_id.id,
+            'state': 'confirmed',
+            'restrict_lot_id': inventory_line.prod_lot_id.id,
+            'restrict_partner_id': inventory_line.partner_id.id,
+         }
+        inventory_location_id = inventory_line.product_id.property_stock_inventory.id
+        if diff < 0:
+            #found more than expected
+            vals['location_id'] = inventory_location_id
+            vals['location_dest_id'] = inventory_line.location_id.id
+            vals['product_uom_qty'] = -diff
+        else:
+            #found less than expected
+            vals['location_id'] = inventory_line.location_id.id
+            vals['location_dest_id'] = inventory_location_id
+            vals['product_uom_qty'] = diff
+        move_id = stock_move_obj.create(cr, uid, vals, context=context)
+        move = stock_move_obj.browse(cr, uid, move_id, context=context)
+        if diff > 0:
+            domain = [('qty', '>', 0.0), ('package_id', '=', inventory_line.package_id.id), ('lot_id', '=', inventory_line.prod_lot_id.id), ('location_id', '=', inventory_line.location_id.id)]
+            preferred_domain_list = [[('reservation_id', '=', False)], [('reservation_id.inventory_id', '!=', inventory_line.inventory_id.id)]]
+            quants = quant_obj.quants_get_prefered_domain(cr, uid, move.location_id, move.product_id, move.product_qty, domain=domain, prefered_domain_list=preferred_domain_list, restrict_partner_id=move.restrict_partner_id.id, context=context)
+            quant_obj.quants_reserve(cr, uid, quants, move, context=context)
+        elif inventory_line.package_id:
+            stock_move_obj.action_done(cr, uid, move_id, context=context)
+            quants = [x.id for x in move.quant_ids]
+            quant_obj.write(cr, uid, quants, {'package_id': inventory_line.package_id.id}, context=context)
+            res = quant_obj.search(cr, uid, [('qty', '<', 0.0), ('product_id', '=', move.product_id.id),
+                                    ('location_id', '=', move.location_dest_id.id), ('package_id', '!=', False)], limit=1, context=context)
+            if res:
+                for quant in move.quant_ids:
+                    if quant.location_id.id == move.location_dest_id.id: #To avoid we take a quant that was reconcile already
+                        quant_obj._quant_reconcile_negative(cr, uid, quant, move, context=context)
+        return move_id
 
     def restrict_change(self, cr, uid, ids, theoretical_qty, context=None):
+        '''
         if ids and theoretical_qty:
             #if the user try to modify a line prepared by openerp, reject the change and display an error message explaining how he should do
             old_value = self.browse(cr, uid, ids[0], context=context)
@@ -2891,6 +2994,7 @@ class stock_inventory_line(osv.osv):
                     'message': _('You can only change the checked quantity of an existing inventory line. If you want modify a data, please set the checked quantity to 0 and create a new inventory line.')
                 }
             }
+            '''
         return {}
 
     def on_change_product_id(self, cr, uid, ids, product, uom, theoretical_qty, context=None):
@@ -2900,8 +3004,10 @@ class stock_inventory_line(osv.osv):
         @param uom: UoM product
         @return:  Dictionary of changed values
         """
+        '''
         if ids and theoretical_qty:
             return self.restrict_change(cr, uid, ids, theoretical_qty, context=context)
+            '''
         if not product:
             return {'value': {'product_uom_id': False}}
         obj_product = self.pool.get('product.product').browse(cr, uid, product, context=context)
