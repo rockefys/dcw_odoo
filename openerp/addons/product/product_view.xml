@@ -520,7 +520,7 @@
             <field name="model">product.category</field>
             <field name="field_parent">child_id</field>
             <field name="arch" type="xml">
-                <tree toolbar="True" string="Product Categories">
+                <tree string="Product Categories">
                     <field name="name"/>
                 </tree>
             </field>
