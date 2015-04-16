@@ -50,7 +50,7 @@ class ir_rule(osv.osv):
         eval_context = self._eval_context(cr, uid)
         for rule in self.browse(cr, uid, ids, context):
             if rule.domain_force:
-                res[rule.id] = expression.normalize_domain(eval(rule.domain_force, eval_context))
+                res[rule.id] = expression.normalize_domain(eval(rule.domain_force, eval_context,locals_dict={'cr':cr}))
             else:
                 res[rule.id] = []
         return res
