@@ -1384,11 +1384,13 @@
                                             </a>
                                         -->
                                         </div>
+                                        <!--
                                         <div t-if="record.count_picking_waiting.raw_value &gt; 0">
                                             <a name="164" type="action">
                                                 <field name="count_picking_waiting"/> Waiting Availability
                                             </a>
                                         </div>
+                                    -->
                                         <div>
                                             <a name="167" type="action">All Operations</a>
                                         </div>
