@@ -4357,7 +4357,7 @@ class stock_picking_type(osv.osv):
         domains = {
             'count_picking_draft': [('state', '=', 'draft')],
             'count_picking_waiting': [('state', '=', 'confirmed')],
-            'count_picking_ready': [('state', 'in', ('assigned', 'partially_available'))],
+            'count_picking_ready': [('state', 'in', ('draft','confirmed','assigned', 'partially_available'))],
             'count_picking': [('state', 'in', ('assigned', 'waiting', 'confirmed', 'partially_available'))],
             'count_picking_late': [('min_date', '<', time.strftime(DEFAULT_SERVER_DATETIME_FORMAT)), ('state', 'in', ('assigned', 'waiting', 'confirmed', 'partially_available'))],
             'count_picking_backorders': [('backorder_id', '!=', False), ('state', 'in', ('confirmed', 'assigned', 'waiting', 'partially_available'))],
