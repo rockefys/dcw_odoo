@@ -77,10 +77,10 @@
 }
 .openerp .oe_kanban_view .oe_kanban_stock_picking_type .oe_items_list {
     position: relative;
-    margin: 10px;
+    margin: 20px 10px;
 }
 .openerp .oe_kanban_view .oe_kanban_stock_picking_type .oe_items_list div {
-    width: 160px;
+    width: 155px;
     height: 22px;
     margin: 0 !important;
     position: relative;
