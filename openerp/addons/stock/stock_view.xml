@@ -1376,8 +1376,8 @@
                                     <div class="oe_items_list oe_kanban_ellipsis">
                                         <div>
                                             <a name="162" type="action">
-                                                <field name="count_picking_ready"/> Ready
-                                            </a>
+                                                Ready 
+                                             <span style="color:red;"><field name="count_picking_ready"/></span></a>
                                             <!--
                                             <a name="161" type="action" class="oe_sparkline_bar_link">
                                                 <field invisible="1" name="last_done_picking" widget="sparkline_bar" options="{'type': 'tristate', 'colorMap': {'0': 'orange', '-1': 'red', '1': 'green'}}">Last 10 Done Operations</field>

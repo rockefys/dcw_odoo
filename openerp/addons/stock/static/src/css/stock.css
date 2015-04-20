@@ -23,7 +23,9 @@
     -o-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
     -box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
-
+.openerp .oe_kanban_view .oe_kanban_action_a{
+    font-size: 14px;
+}
 .oe_product_photo {
     width: 80px;
     height: auto;
